@@ -1,0 +1,28 @@
+version: '3.5'
+services:
+  mqtt:
+    container_name: mqtt-container
+    build:
+      context: ./docker/mosquitto/
+      args:
+        PG_USER: docker
+        PG_PASS: docker
+        PG_HOST: db
+    image: mossquitto-tls/mqtt-container
+    depends_on:
+      - db
+    networks:
+      - mosbackend
+    ports:
+      - "8883:8883"
+  db:
+    container_name: db-container
+    build: ./docker/psql/
+    image: mossquitto-tls/dev-postgresql
+    networks:
+      - mosbackend
+    ports:
+      - "5432:5432"
+networks:
+  mosbackend:
+    driver: bridge
